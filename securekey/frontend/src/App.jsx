@@ -1,19 +1,26 @@
-import { useState } from "react";
-import "./App.css";
-import Vault from "./pages/Cofre";
-import Sidebar from "./pages/Sidebar";
-import PasswordForm from "./pages/Cofre";
-import PasswordList from "./pages/Listadesenhas";
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Login from './pages/Login'
+import Cadastro from './pages/Cadastro'
+import Cofre from './pages/Cofre'
+import GeradorSenha from  './pages/GeradorSenha'
+import Config from './pages/Config'
 
 function App() {
+  
+
   return (
-    <div>
-      <Vault></Vault>
-      <Sidebar></Sidebar>
-      <PasswordForm />
-      <PasswordList />
-    </div>
-  );
+    <>
+      <Router>
+        <Routes>
+          <Route path="/" element={<Login />} />
+          <Route path='/Cadastro' element={<Cadastro />} />
+          <Route path="/home" element={<Cofre />} />
+          <Route path="/cadastrar" element={<GeradorSenha />} />
+          <Route path="/configuracoes" element={<Config />} />
+        </Routes>
+      </Router>
+    </>
+  )
 }
 
-export default App;
+export default App
