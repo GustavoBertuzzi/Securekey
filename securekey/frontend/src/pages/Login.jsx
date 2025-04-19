@@ -6,7 +6,7 @@ import '../index.css';
 
 export default function Login() {
   useEffect(() => {
-    document.title = 'SecureKey';
+    document.title = 'Login | SecureKey';
   }, []);
 
   const [email, setEmail] = useState('');
