@@ -1,75 +1,128 @@
-import { Link, useNavigate } from 'react-router-dom'
-import { useState, useEffect } from 'react';
-import InputLabel from '../components/InputLabel'
-import Button from '../components/Button';
-import '../index.css';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, Link as RouterLink } from 'react-router-dom';
+import {
+  Box,
+  Typography,
+  TextField,
+  Button,
+  Link,
+  Paper,
+  Alert,
+  InputAdornment,
+  IconButton,
+  Container,
+} from '@mui/material';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 
 export default function Login() {
+  const [email, setEmail] = useState('');
+  const [senha, setSenha] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
+
   useEffect(() => {
     document.title = 'Login | SecureKey';
   }, []);
 
-  const [email, setEmail] = useState('');
-  const [senha, setSenha] = useState('');
-  const navigate = useNavigate(); // Hook para redirecionar
-  
   const handleSubmit = (e) => {
     e.preventDefault();
-    // espaço para lógica de validação de formulário
-    
+    setError('');
+
     if (email === 'admin@gmail.com' && senha === '123456') {
-      //  Dados corretos
+      localStorage.setItem('token', 'fake-token');
       navigate('/configuracoes');
     } else {
-      // Dados incorretos 
-      alert('Email ou senha inválidos');
+      setError('Email ou senha inválidos');
     }
   };
 
+  const handleClickShowPassword = () => setShowPassword((prev) => !prev);
+
   return (
-    <main className="min-h-screen flex flex-col md:flex-row bg-azure-web">
+    <Box
+      sx={{
+        minHeight: '100vh',
+        bgcolor: '#f0f4f8',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        p: 2,
+      }}
+    >
+      <Container maxWidth="sm">
+        <Paper elevation={4} sx={{ p: { xs: 3, sm: 5 }, borderRadius: 3 }}>
+          <Typography variant="h4" fontWeight="bold" align="center" mb={2} color="primary">
+            SecureKey
+          </Typography>
 
-      <div className="flex flex-1 items-center justify-center p-6">
-        <div className="w-full max-w-md bg-white rounded-xl shadow-md p-8">
-          <h1 className="text-3xl font-bold text-center text-black mb-6">SecureKey</h1>
-          <h2 className="text-xl text-center text-black mb-4">Login</h2>
-          <form className="flex flex-col space-y-4" onSubmit={handleSubmit}>
-            
-            <InputLabel 
-                labelText='Email'
-                name='email'
-                id='input-email'
-                autoComplete='email'
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-                required={true}
-                placeholder='Digite seu email aqui'
+          <Typography variant="h6" align="center" gutterBottom>
+            Login
+          </Typography>
+
+          {error && (
+            <Alert severity="error" sx={{ mb: 2 }}>
+              {error}
+            </Alert>
+          )}
+
+          <Box component="form" onSubmit={handleSubmit} noValidate>
+            <TextField
+              fullWidth
+              type="email"
+              label="Email"
+              variant="outlined"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              margin="normal"
+              required
             />
 
-            <InputLabel
-                labelText='Senha'
-                name='senha'
-                id='input-senha'
-                autoComplete='senha'
-                value={senha}
-                onChange={e => setSenha(e.target.value)}
-                required={true}
-                placeholder="Digite sua senha aqui"
+            <TextField
+              fullWidth
+              type={showPassword ? 'text' : 'password'}
+              label="Senha"
+              variant="outlined"
+              value={senha}
+              onChange={(e) => setSenha(e.target.value)}
+              margin="normal"
+              required
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton onClick={handleClickShowPassword} edge="end">
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
             />
-            
-            <Button 
-                type='submit'
-                text='Entrar'
-            />
-            
-            <p>Não tem uma conta? <Link to="/cadastro" className="text-sm text-medium-slate-blue hover:underline text-center" >Crie sua conta aqui!</Link></p>
 
-            <Link to="#" className="text-sm text-medium-slate-blue hover:underline text-center">
-              Esqueceu a senha?
-            </Link>
-          </form>
-        </div>
-      </div>
-    </main>
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              color="primary"
+              sx={{ mt: 3, borderRadius: 3 }}
+            >
+              Entrar
+            </Button>
+
+            <Typography variant="body2" align="center" mt={2}>
+              Não tem uma conta?{' '}
+              <Link component={RouterLink} to="/cadastro" underline="hover" color="secondary">
+                Crie sua conta aqui!
+              </Link>
+            </Typography>
+
+            <Typography variant="body2" align="center" mt={1}>
+              <Link component={RouterLink} to="#" underline="hover" color="secondary">
+                Esqueceu a senha?
+              </Link>
+            </Typography>
+          </Box>
+        </Paper>
+      </Container>
+    </Box>
   );
 }
