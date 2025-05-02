@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { 
   AppBar, Toolbar, IconButton, Drawer, 
-  List, ListItem, ListItemIcon, ListItemText,
+  List, ListItem, ListItemIcon, ListItemText, ListItemButton,
   Box, Divider, Menu, MenuItem,
   Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography
 } from '@mui/material';
@@ -50,10 +50,10 @@ export function Layout({ children, onLogout }) {
       {/* Diálogo de Logout Personalizado */}
       <Dialog open={logoutOpen} onClose={cancelLogout}>
         <Box className="p-4">
-          <DialogTitle className="flex items-center">
-            <ExitToApp className="text-red-500 mr-2" />
-            <Typography variant="h6">Confirmar Saída</Typography>
-          </DialogTitle>
+        <DialogTitle className="flex items-center">
+          <ExitToApp className="text-red-500 mr-2" />
+          Confirmar Saída
+        </DialogTitle>
           <DialogContent>
             <Typography>Você realmente deseja sair do sistema?</Typography>
           </DialogContent>
@@ -134,21 +134,22 @@ export function Layout({ children, onLogout }) {
           <Box className="h-full flex flex-col w-64">
             <List className="flex-grow">
               {sidebarItems.map((item, index) => (
-                <ListItem
-                  key={index}
-                  button
-                  component={Link}
-                  to={item.path}
-                  className="hover:bg-gray-100 text-gray-800 no-underline"
-                >
-                  <ListItemIcon>{item.icon}</ListItemIcon>
-                  <ListItemText primary={item.text} />
+                <ListItem key={index} disablePadding>
+                  <ListItemButton
+                    component={Link}
+                    to={item.path}
+                    className="hover:bg-gray-100 text-gray-800 no-underline"
+                  >
+                    <ListItemIcon>{item.icon}</ListItemIcon>
+                    <ListItemText primary={item.text} />
+                  </ListItemButton>
                 </ListItem>
+              
               ))}
             </List>
             <div className="p-2 border-t">
-              <ListItem 
-                button 
+            <ListItem disablePadding>
+              <ListItemButton
                 onClick={openLogoutDialog}
                 className="text-red-500 hover:bg-red-50"
               >
@@ -156,7 +157,8 @@ export function Layout({ children, onLogout }) {
                   <ExitToApp className="text-red-500" />
                 </ListItemIcon>
                 <ListItemText primary="Sair" />
-              </ListItem>
+              </ListItemButton>
+            </ListItem>
             </div>
           </Box>
         </Drawer>
