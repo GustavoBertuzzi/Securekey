@@ -1,101 +1,119 @@
-import React from "react";
+import React, { useState } from 'react';
+import { Layout } from '../components/Layout';
 import {
-  Navbar,
-  Collapse,
+  Box,
   Typography,
-  IconButton,
-} from "@material-tailwind/react";
-import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
- 
-function NavList() {
+  TextField,
+  Button,
+  Alert,
+  Divider
+} from '@mui/material';
+import { Settings } from '@mui/icons-material';
+
+export default function Config() {
+  const [email, setEmail] = useState('');
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [emailPassword, setEmailPassword] = useState('');
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setError('');
+    setSuccess('');
+
+    if (newPassword !== confirmPassword) {
+      return setError("As senhas não coincidem!");
+    }
+
+    // Simulação de integração com backend
+    setTimeout(() => {
+      setSuccess("Configurações atualizadas com sucesso!");
+      setEmail('');
+      setEmailPassword('');
+      setCurrentPassword('');
+      setNewPassword('');
+      setConfirmPassword('');
+    }, 1500);
+  };
+
   return (
-    <ul className="my-2 flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
-      <Typography
-        as="li"
-        variant="small"
-        color="black"
-        className="p-1 font-medium"
-      >
-        <a href="#" className="flex items-center hover:text-blue-500 transition-colors">
-          Pages
-        </a>
-      </Typography>
-      <Typography
-        as="li"
-        variant="small"
-        color="black"
-        className="p-1 font-medium"
-      >
-        <a href="#" className="flex items-center hover:text-blue-500 transition-colors">
-          Account
-        </a>
-      </Typography>
-      <Typography
-        as="li"
-        variant="small"
-        color="black"
-        className="p-1 font-medium"
-      >
-        <a href="#" className="flex items-center hover:text-blue-500 transition-colors">
-          Blocks
-        </a>
-      </Typography>
-      <Typography
-        as="li"
-        variant="small"
-        color="black"
-        className="p-1 font-medium"
-      >
-        <a href="#" className="flex items-center hover:text-blue-500 transition-colors">
-          Docs
-        </a>
-      </Typography>
-    </ul>
-  );
-}
- 
-export default function NavbarSimple() {
-  const [openNav, setOpenNav] = React.useState(false);
- 
-  const handleWindowResize = () =>
-    window.innerWidth >= 960 && setOpenNav(false);
- 
-  React.useEffect(() => {
-    window.addEventListener("resize", handleWindowResize);
- 
-    return () => {
-      window.removeEventListener("resize", handleWindowResize);
-    };
-  }, []);
- 
-  return (
-    <Navbar className="mx-auto max-w-screen-xl px-6 py-3">
-      <div className="flex items-center justify-between text-blue-gray-900">
-        <Typography
-          as="a"
-          href="#"
-          variant="h6"
-          className="mr-4 cursor-pointer py-1.5 text-black"
-          
-        >
-          Material Tailwind
+    <Layout onLogout={handleLogout}>
+      <Box sx={{ p: 4, maxWidth: 600, mx: 'auto' }}>
+        <Typography variant="h5" fontWeight="bold" mb={4} display="flex" alignItems="center">
+          <Settings sx={{ mr: 1 }} />
+          Configurações da Conta
         </Typography>
-        <div className="hidden lg:block">
-          <NavList />
-        </div>
-        <IconButton
-          variant="text"
-          className="ml-auto h-6 w-6 text-inherit hover:bg-transparent focus:bg-transparent active:bg-transparent lg:hidden"
-          ripple={false}
-          onClick={() => setOpenNav(!openNav)}
-        >
-          {openNav ? (
-            <XMarkIcon className="h-6 w-6" strokeWidth={2} />
-          ) : (
-            <Bars3Icon className="h-6 w-6" strokeWidth={2} />
-          )}
-        </IconButton>
-      </div>
-    </Navbar>
+
+        {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
+        {success && <Alert severity="success" sx={{ mb: 2 }}>{success}</Alert>}
+
+        <Box component="form" onSubmit={handleSubmit}>
+          {/* Alterar Email */}
+          <Typography variant="subtitle1" fontWeight="bold" mb={2}>Alterar E-mail</Typography>
+          <TextField
+            fullWidth
+            variant="outlined"
+            label="Novo E-mail"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            sx={{ mb: 2, borderRadius: 3 }}
+          />
+          <TextField
+            fullWidth
+            type="password"
+            variant="outlined"
+            label="Senha Atual"
+            value={emailPassword}
+            onChange={(e) => setEmailPassword(e.target.value)}
+            sx={{ mb: 2, borderRadius: 3 }}
+          />
+          <Button type="submit" variant="contained" fullWidth sx={{ mb: 4, borderRadius: 3 }}>
+            Confirmar E-mail
+          </Button>
+
+          <Divider sx={{ my: 3 }} />
+
+          {/* Alterar Senha */}
+          <Typography variant="subtitle1" fontWeight="bold" mb={2}>Alterar Senha</Typography>
+          <TextField
+            fullWidth
+            type="password"
+            variant="outlined"
+            label="Senha Atual"
+            value={currentPassword}
+            onChange={(e) => setCurrentPassword(e.target.value)}
+            sx={{ mb: 2, borderRadius: 3 }}
+          />
+          <TextField
+            fullWidth
+            type="password"
+            variant="outlined"
+            label="Nova Senha"
+            value={newPassword}
+            onChange={(e) => setNewPassword(e.target.value)}
+            sx={{ mb: 2, borderRadius: 3 }}
+          />
+          <TextField
+            fullWidth
+            type="password"
+            variant="outlined"
+            label="Confirmar Nova Senha"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            sx={{ mb: 2, borderRadius: 3 }}
+          />
+          <Button type="submit" variant="contained" fullWidth sx={{ borderRadius: 3 }}>
+            Salvar Nova Senha
+          </Button>
+        </Box>
+      </Box>
+    </Layout>
   );
 }
