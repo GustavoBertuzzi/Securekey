@@ -36,19 +36,6 @@ Vá até o canto superior esquerda e selecione "Ver" e selecione a opção "Term
 ```bash
   git clone https://github.com/GustavoBertuzzi/Securekey.git
 ```
-Mude de pasta.
-```bash
-  cd securekey
-```
-Instale o node modules
-```bash
-  npm install
-```
-
-Execute o projeto localmente.
-```bash
-  npm run dev
-```
 
 ## Tecnologias usadas
 ###### Front-end:
