@@ -14,30 +14,39 @@ import {
 } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 
-export default function Login() {
+export default function Cadastro() {
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
+  const [confirmarSenha, setConfirmarSenha] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
-    document.title = 'Login | SecureKey';
+    document.title = 'Cadastro | SecureKey';
   }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     setError('');
 
-    if (email === 'admin@gmail.com' && senha === '123456') {
+    if (senha !== confirmarSenha) {
+      setError('As senhas não coincidem');
+      return;
+    }
+
+    // Simulando cadastro de usuário
+    if (email && senha) {
       localStorage.setItem('token', 'fake-token');
       navigate('/configuracoes');
     } else {
-      setError('Email ou senha inválidos');
+      setError('Preencha todos os campos');
     }
   };
 
   const handleClickShowPassword = () => setShowPassword((prev) => !prev);
+  const handleClickShowConfirmPassword = () => setShowConfirmPassword((prev) => !prev);
 
   return (
     <Box
@@ -57,7 +66,7 @@ export default function Login() {
           </Typography>
 
           <Typography variant="h6" align="center" gutterBottom>
-            Login
+            Cadastro
           </Typography>
 
           {error && (
@@ -67,6 +76,7 @@ export default function Login() {
           )}
 
           <Box component="form" onSubmit={handleSubmit} noValidate>
+
             <TextField
               fullWidth
               type="email"
@@ -98,6 +108,26 @@ export default function Login() {
               }}
             />
 
+            <TextField
+              fullWidth
+              type={showConfirmPassword ? 'text' : 'password'}
+              label="Confirmar Senha"
+              variant="outlined"
+              value={confirmarSenha}
+              onChange={(e) => setConfirmarSenha(e.target.value)}
+              margin="normal"
+              required
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton onClick={handleClickShowConfirmPassword} edge="end">
+                      {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
+
             <Button
               type="submit"
               fullWidth
@@ -105,19 +135,13 @@ export default function Login() {
               color="primary"
               sx={{ mt: 3, borderRadius: 3 }}
             >
-              Entrar
+              Cadastrar
             </Button>
 
             <Typography variant="body2" align="center" mt={2}>
-              Não tem uma conta?{' '}
-              <Link component={RouterLink} to="/cadastro" underline="hover" color="secondary">
-                Crie sua conta aqui!
-              </Link>
-            </Typography>
-
-            <Typography variant="body2" align="center" mt={1}>
-              <Link component={RouterLink} to="#" underline="hover" color="secondary">
-                Esqueceu a senha?
+              Já tem uma conta?{' '}
+              <Link component={RouterLink} to="/" underline="hover" color="secondary">
+                Faça login aqui!
               </Link>
             </Typography>
           </Box>
