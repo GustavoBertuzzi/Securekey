@@ -31,8 +31,8 @@ O SecureKey é um sistema de gerenciamento de senhas inspirado no [BitWarden](ht
 - Gerar senhas.
 
 ## Como instalar e executar o projeto.
-
-Abre o terminal e clone o repositório.
+Crie uma pasta, depois abra o Visual Studio Code no canto superior esquerda clique em "Arquivo" e ache a opção "Abrir pasta", selecione a pasta criada.
+Vá até o canto superior esquerda e selecione "Ver" e selecione a opção "Terminal" ou execute o atalho de teclado "Ctrl + '", logo em seguida cole o comando abaixo no terminal.
 ```bash
   git clone https://github.com/GustavoBertuzzi/Securekey.git
 ```
