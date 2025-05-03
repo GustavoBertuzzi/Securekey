@@ -49,7 +49,7 @@ Instale o node modules.
 
 Execute localmente
 ```bash
-  npm install
+  npm run dev
 ```
 
 ## Tecnologias usadas
