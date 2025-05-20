@@ -39,7 +39,7 @@ export default function Cadastro() {
     // Simulando cadastro de usuário
     if (email && senha) {
       localStorage.setItem('token', 'fake-token');
-      navigate('/configuracoes');
+      navigate('/');
     } else {
       setError('Preencha todos os campos');
     }
