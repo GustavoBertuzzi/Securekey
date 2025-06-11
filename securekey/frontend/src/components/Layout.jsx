@@ -18,8 +18,8 @@ export function Layout({ children, onLogout }) {
   const navigate = useNavigate();
 
   const sidebarItems = [
-    { text: "Senhas", icon: <Home className="text-gray-700" />, path: "/senhas" },
     { text: "Cofre", icon: <Lock className="text-gray-700" />, path: "/cofre" },
+    { text: "Senhas", icon: <Home className="text-gray-700" />, path: "/senhas" },
     { text: "Configurações", icon: <Settings className="text-gray-700" />, path: "/configuracoes" },
   ];
 

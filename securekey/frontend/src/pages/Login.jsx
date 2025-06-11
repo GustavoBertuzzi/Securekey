@@ -31,7 +31,7 @@ export default function Login() {
 
     if (email === 'admin@gmail.com' && senha === '123456') {
       localStorage.setItem('token', 'fake-token');
-      navigate('/configuracoes');
+      navigate('/cofre');
     } else {
       setError('Email ou senha inválidos');
     }
