@@ -42,6 +42,7 @@ const PasswordVault = () => {
   };
 
   useEffect(() => {
+    document.title = 'Cofre | SecureKey';
     fetchPasswords();
   }, []);
 

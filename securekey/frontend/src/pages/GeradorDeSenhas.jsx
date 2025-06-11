@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Layout } from '../components/Layout';
 import { TextField, FormControlLabel, Checkbox, Button, Typography } from '@mui/material';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
@@ -9,6 +9,10 @@ export default function GerarSenhaPage() {
   const [quantidadeEspeciais, setQuantidadeEspeciais] = useState(2);
   const [incluirMaiusculas, setIncluirMaiusculas] = useState(true);
   const [senhaGerada, setSenhaGerada] = useState('');
+
+  useEffect(() => {
+    document.title = 'Gerador de senha | SecureKey';
+  }, []);
 
   const gerarSenha = () => {
     // sugestão para conectar o back-end
