@@ -22,3 +22,5 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+# Ignorar qualquer .env dentro de qualquer subpasta
+**/.env
