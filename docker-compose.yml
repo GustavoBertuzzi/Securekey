@@ -1,0 +1,45 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql_db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: SenhaSegura123@
+      MYSQL_DATABASE: password_manager
+      MYSQL_USER: user_manager
+      MYSQL_PASSWORD: SenhaSegura123@
+    ports:
+      - "3307:3306"
+    volumes:
+      - ./database/password_manager.sql:/docker-entrypoint-initdb.d/password_manager.sql
+      - mysql-data:/var/lib/mysql
+
+  backend:
+    build:
+      context: ./securekey/backend
+      dockerfile: Dockerfile-backend
+    container_name: backend
+    restart: always
+    ports:
+      - "5000:5000"
+    environment:
+      DB_HOST: mysql
+      DB_USER: user_manager
+      DB_PASSWORD: SenhaSegura123@
+      DB_NAME: password_manager
+    depends_on:
+      - mysql
+
+  frontend:
+    build:
+      context: ./securekey/frontend
+      dockerfile: Dockerfile-frontend
+    container_name: frontend
+    restart: always
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+
+volumes:
+  mysql-data:

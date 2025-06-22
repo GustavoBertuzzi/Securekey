@@ -1,0 +1,24 @@
+# Dockerfile-frontend
+FROM node:18
+
+# Diretório de trabalho dentro do container
+WORKDIR /app
+
+# Copiar os arquivos do frontend
+COPY . .
+
+# Instalar dependências
+RUN npm install
+
+# Build do projeto
+RUN npm run build
+
+# Usar um servidor simples para servir o build
+RUN npm install -g serve
+
+# Expor a porta onde o frontend vai rodar
+EXPOSE 5173
+
+# Rodar o frontend com serve
+CMD ["serve", "-s", "dist", "-l", "5173"]
+
