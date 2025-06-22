@@ -2,22 +2,26 @@ const mysql = require("mysql2/promise");
 require("dotenv").config();
 
 async function setupDatabase() {
-  const connection = await mysql.createConnection({
-    host: process.env.DB_HOST,
+  const connection = mysql.createConnection({
+    host: process.env.DB_HOST || "localhost",
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
   });
 
   try {
+    // Criar o banco de dados se não existir
     await connection.query(
       `CREATE DATABASE IF NOT EXISTS ${process.env.DB_NAME}`
     );
     console.log(
-      `Banco de dados "${process.env.DB_NAME}" criado/com verificado!`
+      `Banco de dados "${process.env.DB_NAME}" criado/verificado com sucesso!`
     );
 
+    // Usar o banco de dados
     await connection.changeUser({ database: process.env.DB_NAME });
 
+    // Criar tabela usuarios
     await connection.query(`
       CREATE TABLE IF NOT EXISTS usuarios (
         id INT AUTO_INCREMENT PRIMARY KEY,
@@ -27,6 +31,7 @@ async function setupDatabase() {
       )
     `);
 
+    // Criar tabela cofre
     await connection.query(`
       CREATE TABLE IF NOT EXISTS cofre (
         id INT AUTO_INCREMENT PRIMARY KEY,
@@ -36,6 +41,21 @@ async function setupDatabase() {
         senha VARCHAR(255) NOT NULL,
         proprietario VARCHAR(50),
         FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
+      )
+    `);
+
+    // Criar tabela apps (passo 5 com folder incluso)
+    await connection.query(`
+      CREATE TABLE IF NOT EXISTS apps (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        app_name VARCHAR(100) NOT NULL,
+        username VARCHAR(100),
+        encrypted_password VARCHAR(255) NOT NULL,
+        owner_password VARCHAR(255) NOT NULL,
+        folder ENUM('Trabalho', 'Pessoal', 'Outros') DEFAULT 'Outros',
+        notes TEXT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
       )
     `);
 

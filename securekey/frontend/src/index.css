@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 @theme {
-    --color-azure-web: #E8F9FF;
-    --color-gunmetal: #2D3739;
-    --color-cadet-gray: #98ABAE;
-    --color-medium-slate-blue: #7371FC;
+  --color-azure-web: #e8f9ff;
+  --color-gunmetal: #2d3739;
+  --color-cadet-gray: #98abae;
+  --color-medium-slate-blue: #7371fc;
 }

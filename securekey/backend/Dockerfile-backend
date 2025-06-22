@@ -1,0 +1,18 @@
+# Dockerfile-backend
+FROM node:18
+
+# Diretório de trabalho dentro do container
+WORKDIR /app
+
+# Instalar dependências
+COPY package*.json ./
+RUN npm install
+
+# Copiar os arquivos do backend
+COPY . .
+
+# Expor a porta usada pelo backend
+EXPOSE 5000
+
+# Comando para iniciar a aplicação
+CMD ["npm", "start"]

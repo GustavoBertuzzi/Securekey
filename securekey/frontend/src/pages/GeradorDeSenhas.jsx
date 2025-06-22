@@ -1,18 +1,27 @@
-import React, { useState } from 'react';
-import { Layout } from '../components/Layout';
-import { TextField, FormControlLabel, Checkbox, Button, Typography } from '@mui/material';
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import React, { useState, useEffect } from "react";
+import { Layout } from "../components/Layout";
+import {
+  TextField,
+  FormControlLabel,
+  Checkbox,
+  Button,
+  Typography,
+} from "@mui/material";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 
 export default function GerarSenhaPage() {
   const [quantidadeCaracteres, setQuantidadeCaracteres] = useState(12);
   const [quantidadeNumeros, setQuantidadeNumeros] = useState(2);
   const [quantidadeEspeciais, setQuantidadeEspeciais] = useState(2);
   const [incluirMaiusculas, setIncluirMaiusculas] = useState(true);
-  const [senhaGerada, setSenhaGerada] = useState('');
+  const [senhaGerada, setSenhaGerada] = useState("");
+
+  useEffect(() => {
+    document.title = "Gerador de senha | SecureKey";
+  }, []);
 
   const gerarSenha = () => {
     // sugestão para conectar o back-end
-    
   };
 
   const copiarSenha = () => {
@@ -22,8 +31,9 @@ export default function GerarSenhaPage() {
   return (
     <Layout onLogout={() => {}}>
       <div className="max-w-xl mx-auto bg-white p-6 rounded-lg shadow-md">
-        
-        <Typography variant="h5" className="mb-4 font-bold text-gray-800">Gerador de Senhas</Typography>
+        <Typography variant="h5" className="mb-4 font-bold text-gray-800">
+          Gerador de Senhas
+        </Typography>
 
         <div className="grid gap-8">
           <TextField
@@ -74,7 +84,12 @@ export default function GerarSenhaPage() {
               <Typography className="text-gray-800 font-mono break-all">
                 {senhaGerada}
               </Typography>
-              <Button onClick={copiarSenha} variant="outlined" size="small" className="ml-4">
+              <Button
+                onClick={copiarSenha}
+                variant="outlined"
+                size="small"
+                className="ml-4"
+              >
                 <ContentCopyIcon fontSize="small" />
               </Button>
             </div>

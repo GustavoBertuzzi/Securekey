@@ -17,7 +17,7 @@ import {
   Divider,
   List,
   ListItem,
-  ListItemText
+  ListItemText,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
@@ -29,26 +29,32 @@ const PasswordVault = () => {
     username: "",
     password: "",
     owner_password: "",
-    folder: "",
+    folder: "", // Adicionado o campo folder
   });
+
   const [passwords, setPasswords] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [selectedFolder, setSelectedFolder] = useState("");
   const [folders, setFolders] = useState(["Trabalho", "Pessoal", "Outros"]);
 
   const fetchPasswords = async () => {
-    const res = await axios.get("http://localhost:3001/api/passwords");
-    setPasswords(res.data);
+    try {
+      const res = await axios.get("http://localhost:5000/api/passwords");
+      setPasswords(res.data.data || []);
+    } catch (err) {
+      alert("Erro ao carregar senhas: " + (err.message || err));
+    }
   };
 
   useEffect(() => {
+    document.title = "Cofre | SecureKey";
     fetchPasswords();
   }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:3001/api/passwords", formData);
+      await axios.post("http://localhost:5000/api/passwords", formData);
       setFormData({
         app_name: "",
         username: "",
@@ -59,7 +65,9 @@ const PasswordVault = () => {
       setShowModal(false);
       fetchPasswords();
     } catch (error) {
-      alert("Erro ao salvar: " + (error.response?.data?.error || error.message));
+      alert(
+        "Erro ao salvar: " + (error.response?.data?.error || error.message)
+      );
     }
   };
 
@@ -69,8 +77,12 @@ const PasswordVault = () => {
 
   return (
     <Layout onLogout={() => localStorage.removeItem("token")}>
-      <Grid container spacing={4} flexDirection={{ xs: "column", md: "row-reverse" }}>
-        {/* Sidebar à direita */}
+      <Grid
+        container
+        spacing={4}
+        flexDirection={{ xs: "column", md: "row-reverse" }}
+      >
+        {/* Sidebar */}
         <Grid item xs={12} md={3}>
           <Button
             variant="contained"
@@ -89,10 +101,12 @@ const PasswordVault = () => {
             <List dense>
               {folders.map((folder, i) => (
                 <ListItem
-                  button
-                  selected={folder === selectedFolder}
-                  onClick={() => setSelectedFolder(folder === selectedFolder ? "" : folder)}
                   key={i}
+                  selected={folder === selectedFolder}
+                  onClick={() =>
+                    setSelectedFolder(folder === selectedFolder ? "" : folder)
+                  }
+                  button
                 >
                   <ListItemText primary={folder} />
                 </ListItem>
@@ -114,33 +128,44 @@ const PasswordVault = () => {
           </Paper>
         </Grid>
 
-        {/* Lista de cards à esquerda */}
+        {/* Lista de senhas */}
         <Grid item xs={12} md={9}>
           <Typography variant="h6" gutterBottom>
             Senhas Salvas
           </Typography>
           <Grid container spacing={2}>
-            {filteredPasswords.map((p, index) => (
-              <Grid item xs={12} sm={6} md={4} key={index}>
-                <Paper
-                  elevation={3}
-                  sx={{ p: 2, cursor: "pointer" }}
-                  onClick={() => alert(JSON.stringify(p, null, 2))}
-                >
-                  <Typography variant="subtitle1">{p.app_name}</Typography>
-                  <Typography variant="body2" color="textSecondary">
-                    Dono: {p.owner_password}
-                  </Typography>
-                </Paper>
-              </Grid>
-            ))}
+            {filteredPasswords.length > 0 ? (
+              filteredPasswords.map((p, index) => (
+                <Grid item xs={12} sm={6} md={4} key={index}>
+                  <Paper
+                    elevation={3}
+                    sx={{ p: 2, cursor: "pointer" }}
+                    onClick={() => alert(JSON.stringify(p, null, 2))}
+                  >
+                    <Typography variant="subtitle1">{p.app_name}</Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      Dono: {p.owner_password}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      Pasta: {p.folder || "Nenhuma"}
+                    </Typography>
+                  </Paper>
+                </Grid>
+              ))
+            ) : (
+              <Typography sx={{ m: 2 }}>Nenhuma senha encontrada.</Typography>
+            )}
           </Grid>
         </Grid>
       </Grid>
 
-
-      {/* Modal */}
-      <Dialog open={showModal} onClose={() => setShowModal(false)} fullWidth maxWidth="sm">
+      {/* Modal para nova senha */}
+      <Dialog
+        open={showModal}
+        onClose={() => setShowModal(false)}
+        fullWidth
+        maxWidth="sm"
+      >
         <DialogTitle>
           Nova Senha
           <IconButton
@@ -152,34 +177,48 @@ const PasswordVault = () => {
         </DialogTitle>
 
         <DialogContent dividers>
-          <Box component="form" onSubmit={handleSubmit} sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+          <Box
+            component="form"
+            onSubmit={handleSubmit}
+            sx={{ display: "flex", flexDirection: "column", gap: 2 }}
+          >
             <TextField
               label="Nome do App"
               value={formData.app_name}
-              onChange={(e) => setFormData({ ...formData, app_name: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, app_name: e.target.value })
+              }
               required
             />
             <TextField
               label="Usuário"
               value={formData.username}
-              onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, username: e.target.value })
+              }
             />
             <TextField
               label="Senha"
               type="password"
               value={formData.password}
-              onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, password: e.target.value })
+              }
               required
             />
             <TextField
               label="Dono"
               value={formData.owner_password}
-              onChange={(e) => setFormData({ ...formData, owner_password: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, owner_password: e.target.value })
+              }
               required
             />
             <Select
               value={formData.folder}
-              onChange={(e) => setFormData({ ...formData, folder: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, folder: e.target.value })
+              }
               displayEmpty
             >
               <MenuItem value="">Selecionar pasta</MenuItem>
