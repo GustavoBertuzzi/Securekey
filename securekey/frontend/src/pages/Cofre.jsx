@@ -11,13 +11,7 @@ import {
   Paper,
   TextField,
   Typography,
-  Select,
-  MenuItem,
   IconButton,
-  Divider,
-  List,
-  ListItem,
-  ListItemText,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
@@ -28,14 +22,11 @@ const PasswordVault = () => {
     app_name: "",
     username: "",
     password: "",
-    owner_password: "",
-    folder: "", // Adicionado o campo folder
   });
 
   const [passwords, setPasswords] = useState([]);
   const [showModal, setShowModal] = useState(false);
-  const [selectedFolder, setSelectedFolder] = useState("");
-  const [folders, setFolders] = useState(["Trabalho", "Pessoal", "Outros"]);
+  const [selectedPassword, setSelectedPassword] = useState(null);
 
   const fetchPasswords = async () => {
     try {
@@ -55,13 +46,7 @@ const PasswordVault = () => {
     e.preventDefault();
     try {
       await axios.post("http://localhost:5000/api/passwords", formData);
-      setFormData({
-        app_name: "",
-        username: "",
-        password: "",
-        owner_password: "",
-        folder: "",
-      });
+      setFormData({ app_name: "", username: "", password: "" });
       setShowModal(false);
       fetchPasswords();
     } catch (error) {
@@ -71,84 +56,33 @@ const PasswordVault = () => {
     }
   };
 
-  const filteredPasswords = selectedFolder
-    ? passwords.filter((p) => p.folder === selectedFolder)
-    : passwords;
-
   return (
     <Layout onLogout={() => localStorage.removeItem("token")}>
-      <Grid
-        container
-        spacing={4}
-        flexDirection={{ xs: "column", md: "row-reverse" }}
-      >
-        {/* Sidebar */}
-        <Grid item xs={12} md={3}>
+      <Grid container spacing={4}>
+        <Grid item xs={12}>
           <Button
             variant="contained"
             startIcon={<AddIcon />}
-            fullWidth
             onClick={() => setShowModal(true)}
-            sx={{ mb: 2 }}
           >
             Nova Senha
           </Button>
-
-          <Paper elevation={3} sx={{ p: 2 }}>
-            <Typography variant="h6" gutterBottom>
-              Filtros por Pasta
-            </Typography>
-            <List dense>
-              {folders.map((folder, i) => (
-                <ListItem
-                  key={i}
-                  selected={folder === selectedFolder}
-                  onClick={() =>
-                    setSelectedFolder(folder === selectedFolder ? "" : folder)
-                  }
-                  button
-                >
-                  <ListItemText primary={folder} />
-                </ListItem>
-              ))}
-            </List>
-            <Divider sx={{ my: 2 }} />
-            <Button
-              variant="outlined"
-              fullWidth
-              onClick={() => {
-                const newFolder = prompt("Nome da nova pasta:");
-                if (newFolder && !folders.includes(newFolder)) {
-                  setFolders([...folders, newFolder]);
-                }
-              }}
-            >
-              Nova Pasta
-            </Button>
-          </Paper>
         </Grid>
 
-        {/* Lista de senhas */}
-        <Grid item xs={12} md={9}>
+        <Grid item xs={12}>
           <Typography variant="h6" gutterBottom>
             Senhas Salvas
           </Typography>
           <Grid container spacing={2}>
-            {filteredPasswords.length > 0 ? (
-              filteredPasswords.map((p, index) => (
+            {passwords.length > 0 ? (
+              passwords.map((p, index) => (
                 <Grid item xs={12} sm={6} md={4} key={index}>
                   <Paper
                     elevation={3}
                     sx={{ p: 2, cursor: "pointer" }}
-                    onClick={() => alert(JSON.stringify(p, null, 2))}
+                    onClick={() => setSelectedPassword(p)}
                   >
                     <Typography variant="subtitle1">{p.app_name}</Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      Dono: {p.owner_password}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      Pasta: {p.folder || "Nenhuma"}
-                    </Typography>
                   </Paper>
                 </Grid>
               ))
@@ -159,7 +93,7 @@ const PasswordVault = () => {
         </Grid>
       </Grid>
 
-      {/* Modal para nova senha */}
+      {/* Modal para adicionar nova senha */}
       <Dialog
         open={showModal}
         onClose={() => setShowModal(false)}
@@ -183,7 +117,7 @@ const PasswordVault = () => {
             sx={{ display: "flex", flexDirection: "column", gap: 2 }}
           >
             <TextField
-              label="Nome do App"
+              label="Nome do App/Site"
               value={formData.app_name}
               onChange={(e) =>
                 setFormData({ ...formData, app_name: e.target.value })
@@ -196,6 +130,7 @@ const PasswordVault = () => {
               onChange={(e) =>
                 setFormData({ ...formData, username: e.target.value })
               }
+              required
             />
             <TextField
               label="Senha"
@@ -206,28 +141,6 @@ const PasswordVault = () => {
               }
               required
             />
-            <TextField
-              label="Dono"
-              value={formData.owner_password}
-              onChange={(e) =>
-                setFormData({ ...formData, owner_password: e.target.value })
-              }
-              required
-            />
-            <Select
-              value={formData.folder}
-              onChange={(e) =>
-                setFormData({ ...formData, folder: e.target.value })
-              }
-              displayEmpty
-            >
-              <MenuItem value="">Selecionar pasta</MenuItem>
-              {folders.map((folder, i) => (
-                <MenuItem key={i} value={folder}>
-                  {folder}
-                </MenuItem>
-              ))}
-            </Select>
             <DialogActions>
               <Button type="submit" variant="contained" color="primary">
                 Salvar
@@ -235,6 +148,37 @@ const PasswordVault = () => {
             </DialogActions>
           </Box>
         </DialogContent>
+      </Dialog>
+
+      {/* Modal de exibição da senha */}
+      <Dialog
+        open={!!selectedPassword}
+        onClose={() => setSelectedPassword(null)}
+        fullWidth
+        maxWidth="sm"
+      >
+        <DialogTitle>
+          Detalhes da Senha
+          <IconButton
+            onClick={() => setSelectedPassword(null)}
+            sx={{ position: "absolute", right: 8, top: 8 }}
+          >
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
+        {selectedPassword && (
+          <DialogContent dividers>
+            <Typography variant="subtitle1">
+              Nome: {selectedPassword.app_name}
+            </Typography>
+            <Typography variant="body1">
+              Usuário: {selectedPassword.username}
+            </Typography>
+            <Typography variant="body1">
+              Senha: {selectedPassword.password}
+            </Typography>
+          </DialogContent>
+        )}
       </Dialog>
     </Layout>
   );
